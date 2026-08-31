@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academia Cristal — Garopaba, SC</title>
+<meta name="description" content="Academia Cristal em Garopaba, SC. Treine forte, evolua todos os dias.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  :root{
+    --black:#050505;
+    --panel:#0D0D0D;
+    --yellow:#FFD21C;
+    --yellow-dark:#C9A500;
+    --white:#F5F5F5;
+    --grey:#8A8A8A;
+    --line: rgba(245,245,245,0.1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    cursor:none;
+  }
+  @media (max-width:900px){ body{ cursor:auto; } }
+
+  ::selection{ background:var(--yellow); color:var(--black); }
+
+  img{display:block;max-width:100%;}
+
+  .wrap{ max-width:1360px; margin:0 auto; padding:0 40px; }
+  @media (max-width:640px){ .wrap{ padding:0 24px; } }
+
+  h1,h2,h3,.display{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:-0.01em;
+    line-height:0.94;
+  }
+
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    color:var(--yellow);
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* ---------- custom cursor ---------- */
+  .cursor{
+    position:fixed; top:0; left:0; width:16px; height:16px;
+    border-radius:50%; background:var(--yellow);
+    pointer-events:none; z-index:999; mix-blend-mode:difference;
+    transform:translate(-50%,-50%);
+  }
+  @media (max-width:900px){ .cursor{ display:none; } }
+
+  /* ---------- nav ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:28px 0;
+    mix-blend-mode:difference;
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family:'Anton', sans-serif;
+    font-size:1.4rem;
+    letter-spacing:0.02em;
+    color:var(--white);
+  }
+  nav.links ul{ display:flex; gap:44px; list-style:none; }
+  nav.links a{
+    font-size:0.82rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--white);
+    position:relative;
+  }
+  nav.links a::after{
+    content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px;
+    background:var(--yellow); transition:width .3s ease;
+  }
+  nav.links a:hover::after{ width:100%; }
+  @media (max-width:900px){ nav.links{ display:none; } }
+
+  .menu-btn{
+    display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer;
+    z-index:200;
+  }
+  .menu-btn span{ width:26px; height:2px; background:var(--white); display:block; }
+  @media (max-width:900px){ .menu-btn{ display:flex; } }
+
+  .mobile-menu{
+    position:fixed; inset:0; background:var(--black); z-index:150;
+    display:flex; flex-direction:column; justify-content:center; padding:0 32px;
+    transform:translateY(-100%); transition:transform .5s cubic-bezier(.77,0,.18,1);
+  }
+  .mobile-menu.open{ transform:translateY(0); }
+  .mobile-menu ul{ list-style:none; display:flex; flex-direction:column; gap:18px; }
+  .mobile-menu a{ font-family:'Anton', sans-serif; font-size:2.4rem; text-transform:uppercase; color:var(--white); }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; height:100svh; min-height:640px; overflow:hidden;
+    display:flex; align-items:flex-end;
+  }
+  .hero-bg{
+    position:absolute; inset:0; background-image:url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1920&q=80');
+    background-size:cover; background-position:center 30%;
+    transform:scale(1.15);
+  }
+  .hero-overlay{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.35) 40%, rgba(5,5,5,0.92) 100%);
+  }
+  .hero-grain{
+    position:absolute; inset:0; opacity:0.05; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .hero-lines{
+    position:absolute; top:0; left:0; right:0; height:100%; pointer-events:none;
+  }
+  .hero-content{
+    position:relative; z-index:2; width:100%; padding-bottom:min(9vh,90px);
+  }
+  .hero-num{
+    font-family:'Space Mono', monospace; font-size:0.85rem; color:var(--yellow);
+    margin-bottom:20px; overflow:hidden;
+  }
+  .hero-title{
+    font-size:clamp(3.2rem, 9.5vw, 8rem);
+    color:var(--white);
+  }
+  .hero-title .accent{ color:var(--yellow); }
+  .hero-title .line{ overflow:hidden; }
+  .hero-title .line span{ display:inline-block; }
+  .hero-sub{
+    font-size:1.1rem; color:rgba(245,245,245,0.75); margin-top:26px; max-width:36ch;
+    overflow:hidden;
+  }
+  .hero-ctas{ display:flex; gap:18px; margin-top:44px; flex-wrap:wrap; overflow:hidden; }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:18px 34px; font-size:0.82rem; font-weight:700; letter-spacing:0.05em;
+    text-transform:uppercase; border:1px solid var(--yellow); position:relative;
+    overflow:hidden; z-index:1;
+  }
+  .btn-fill{ background:var(--yellow); color:var(--black); }
+  .btn-fill span{ position:relative; z-index:2; }
+  .btn-fill::before{
+    content:''; position:absolute; inset:0; background:var(--white);
+    transform:translateX(-101%); transition:transform .35s cubic-bezier(.65,0,.35,1); z-index:1;
+  }
+  .btn-fill:hover::before{ transform:translateX(0); }
+  .btn-outline{ color:var(--white); background:transparent; }
+  .btn-outline::before{
+    content:''; position:absolute; inset:0; background:var(--yellow);
+    transform:translateX(-101%); transition:transform .35s cubic-bezier(.65,0,.35,1); z-index:-1;
+  }
+  .btn-outline:hover{ color:var(--black); }
+  .btn-outline:hover::before{ transform:translateX(0); }
+
+  .hero-scroll{
+    position:absolute; right:40px; bottom:36px; z-index:2;
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Mono', monospace; font-size:0.68rem; color:rgba(245,245,245,0.6);
+    letter-spacing:0.06em;
+  }
+  @media (max-width:640px){ .hero-scroll{ display:none; } }
+  .scroll-track{ width:1px; height:44px; background:rgba(245,245,245,0.25); position:relative; overflow:hidden; }
+  .scroll-thumb{ position:absolute; top:0; left:0; width:100%; height:16px; background:var(--yellow); }
+
+  /* ---------- section shells ---------- */
+  section{ position:relative; }
+  .pad{ padding:140px 0; }
+  @media (max-width:768px){ .pad{ padding:88px 0; } }
+
+  /* ---------- why cristal ---------- */
+  .why-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:40px; margin-bottom:90px; flex-wrap:wrap; }
+  .why-head h2{ font-size:clamp(2.4rem, 5.5vw, 4.4rem); max-width:14ch; }
+  .why-head p{ color:var(--grey); max-width:34ch; font-size:1rem; }
+
+  .why-grid{ display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--line); }
+  @media (max-width:860px){ .why-grid{ grid-template-columns:1fr; } }
+  .why-item{
+    border-bottom:1px solid var(--line); border-right:1px solid var(--line);
+    padding:52px 36px; position:relative; overflow:hidden; min-height:340px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    transition:background .4s ease;
+  }
+  .why-item:last-child{ border-right:none; }
+  @media (max-width:860px){ .why-item{ border-right:none; } }
+  .why-item .why-bg{
+    position:absolute; inset:0; background-size:cover; background-position:center;
+    opacity:0; transform:scale(1.08); transition:opacity .5s ease, transform .6s ease;
+  }
+  .why-item:hover .why-bg{ opacity:0.35; transform:scale(1); }
+  .why-item::after{
+    content:''; position:absolute; inset:0; background:linear-gradient(180deg, transparent 30%, var(--black) 100%);
+    z-index:0;
+  }
+  .why-num{ font-family:'Space Mono', monospace; color:var(--yellow); font-size:0.8rem; position:relative; z-index:1; }
+  .why-item h3{ font-size:2.4rem; margin:18px 0 12px; position:relative; z-index:1; }
+  .why-item p{ color:var(--grey); font-size:0.95rem; max-width:28ch; position:relative; z-index:1; }
+  .why-item-line{
+    position:absolute; left:36px; bottom:0; height:2px; width:0; background:var(--yellow); z-index:1;
+    transition:width .4s ease;
+  }
+  .why-item:hover .why-item-line{ width:calc(100% - 72px); }
+
+  /* ---------- stats ---------- */
+  .stats-strip{ border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .stats-grid{ display:grid; grid-template-columns:repeat(3,1fr); }
+  @media (max-width:700px){ .stats-grid{ grid-template-columns:1fr; } }
+  .stat{
+    padding:64px 36px; text-align:center; border-right:1px solid var(--line);
+  }
+  .stat:last-child{ border-right:none; }
+  @media (max-width:700px){ .stat{ border-right:none; border-bottom:1px solid var(--line); } .stat:last-child{ border-bottom:none; } }
+  .stat-num{ font-family:'Anton', sans-serif; font-size:clamp(3rem,7vw,5rem); color:var(--white); }
+  .stat-num .unit{ color:var(--yellow); }
+  .stat-label{ color:var(--grey); font-size:0.85rem; margin-top:8px; text-transform:uppercase; letter-spacing:0.04em; }
+  .stats-quote{ text-align:center; padding:36px 24px 0; color:var(--grey); font-size:1rem; }
+
+  /* ---------- experience ---------- */
+  .experience{ position:relative; height:78vh; min-height:520px; overflow:hidden; }
+  .exp-bg{
+    position:absolute; inset:0; background-image:url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1920&q=80');
+    background-size:cover; background-position:center; transform:scale(1.15);
+  }
+  .exp-overlay{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,0.75), rgba(5,5,5,0.4) 40%, rgba(5,5,5,0.85)); }
+  .exp-content{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:center; }
+  .exp-title{ font-size:clamp(2.6rem,7vw,5.6rem); text-align:center; }
+  .exp-tags{ display:flex; justify-content:center; gap:70px; margin-top:70px; flex-wrap:wrap; }
+  @media (max-width:640px){ .exp-tags{ gap:34px; } }
+  .exp-tag{ text-align:center; max-width:160px; }
+  .exp-tag .eyebrow{ display:block; margin-bottom:8px; }
+  .exp-tag p{ color:rgba(245,245,245,0.75); font-size:0.88rem; }
+
+  /* ---------- testimonials ---------- */
+  .testi-head{ margin-bottom:70px; }
+  .testi-head h2{ font-size:clamp(2.4rem,5.5vw,4.2rem); }
+  .testi-rating{ display:flex; align-items:center; gap:18px; margin-top:26px; }
+  .testi-rating .num{ font-family:'Anton', sans-serif; font-size:2.6rem; color:var(--yellow); }
+  .testi-rating .meta{ color:var(--grey); font-size:0.85rem; line-height:1.4; }
+
+  .testi-track{ display:flex; gap:1px; background:var(--line); border:1px solid var(--line); overflow-x:auto; scroll-snap-type:x mandatory; }
+  .testi-track::-webkit-scrollbar{ display:none; }
+  .testi-card{
+    flex:0 0 min(420px,86vw); scroll-snap-align:start; background:var(--panel);
+    padding:44px 38px; display:flex; flex-direction:column; justify-content:space-between; min-height:260px;
+  }
+  .testi-card p{ font-size:1.2rem; line-height:1.5; color:var(--white); }
+  .testi-card .stars{ color:var(--yellow); font-family:'Space Mono', monospace; margin-top:26px; font-size:0.85rem; }
+
+  /* ---------- about ---------- */
+  .about-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:70px; align-items:center; }
+  @media (max-width:900px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-img-wrap{ overflow:hidden; aspect-ratio:4/5; position:relative; }
+  .about-img{ width:100%; height:100%; object-fit:cover; transform:scale(1.25); background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80'); background-size:cover; background-position:center; }
+  .about-img-wrap::after{ content:''; position:absolute; left:24px; top:24px; right:-24px; bottom:-24px; border:1px solid var(--yellow); z-index:-1; }
+  .about-body h2{ font-size:clamp(2.2rem,4.6vw,3.4rem); margin-bottom:26px; }
+  .about-body p{ color:var(--grey); font-size:1.05rem; max-width:44ch; line-height:1.65; }
+  .about-marks{ display:flex; gap:14px; margin-top:36px; }
+  .about-mark{ width:44px; height:2px; background:var(--yellow); }
+
+  /* ---------- location ---------- */
+  .loc{ border-top:1px solid var(--line); }
+  .loc-grid{ display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
+  @media (max-width:900px){ .loc-grid{ grid-template-columns:1fr; gap:44px; } }
+  .loc h2{ font-size:clamp(2.4rem,5.6vw,4.4rem); margin-bottom:38px; }
+  .loc-line{ display:flex; gap:18px; padding:20px 0; border-bottom:1px solid var(--line); }
+  .loc-line:first-of-type{ border-top:1px solid var(--line); }
+  .loc-line strong{ display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--yellow); margin-bottom:6px; }
+  .loc-line span{ color:var(--white); font-size:1rem; }
+  .loc-map{ aspect-ratio:1/1; background:var(--panel); border:1px solid var(--line); position:relative; overflow:hidden; }
+  .loc-map svg{ width:100%; height:100%; }
+
+  /* ---------- final cta ---------- */
+  .final-cta{ position:relative; min-height:80vh; display:flex; align-items:center; overflow:hidden; }
+  .final-bg{
+    position:absolute; inset:0; background-image:url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=1920&q=80');
+    background-size:cover; background-position:center; opacity:0; transform:scale(1.1);
+  }
+  .final-overlay{ position:absolute; inset:0; background:rgba(5,5,5,0.88); }
+  .final-content{ position:relative; z-index:1; text-align:center; width:100%; }
+  .final-title{ font-size:clamp(2.6rem,8vw,6.4rem); }
+  .final-title .accent{ color:var(--yellow); }
+  .final-cta .btn{ margin-top:52px; }
+
+  /* ---------- footer ---------- */
+  footer{ border-top:1px solid var(--line); padding:60px 0 40px; }
+  .footer-top{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:40px; margin-bottom:50px; }
+  .footer-logo{ font-family:'Anton', sans-serif; font-size:1.8rem; }
+  .footer-logo span{ display:block; font-family:'Space Mono', monospace; font-size:0.68rem; color:var(--yellow); letter-spacing:0.08em; margin-top:6px; }
+  footer nav ul{ list-style:none; display:flex; gap:32px; flex-wrap:wrap; }
+  footer nav a{ font-size:0.85rem; color:var(--grey); text-transform:uppercase; letter-spacing:0.03em; }
+  footer nav a:hover{ color:var(--yellow); }
+  .footer-bottom{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; padding-top:26px; border-top:1px solid var(--line); color:var(--grey); font-size:0.8rem; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .cursor{ display:none; }
+    body{ cursor:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo">CRISTAL</a>
+    <nav class="links">
+      <ul>
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#academia">Academia</a></li>
+        <li><a href="#estrutura">Estrutura</a></li>
+        <li><a href="#avaliacoes">Avaliações</a></li>
+        <li><a href="#local">Localização</a></li>
+      </ul>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#inicio">Início</a></li>
+    <li><a href="#academia">Academia</a></li>
+    <li><a href="#estrutura">Estrutura</a></li>
+    <li><a href="#avaliacoes">Avaliações</a></li>
+    <li><a href="#local">Localização</a></li>
+  </ul>
+</div>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-grain"></div>
+    <svg class="hero-lines" id="heroLines" width="100%" height="100%"></svg>
+    <div class="wrap hero-content">
+      <div class="hero-num" id="heroNum">01 / ACADEMIA CRISTAL — GAROPABA, SC</div>
+      <h1 class="hero-title" id="heroTitle">
+        <div class="line"><span>SEU LIMITE</span></div>
+        <div class="line"><span class="accent">NÃO É O FIM.</span></div>
+      </h1>
+      <p class="hero-sub" id="heroSub">Treine forte. Evolua todos os dias.</p>
+      <div class="hero-ctas" id="heroCtas">
+        <a class="btn btn-fill magnetic" href="https://wa.me/5548991837665"><span>Começar a treinar</span></a>
+        <a class="btn btn-outline magnetic" href="#academia">Conhecer a academia</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-track"><div class="scroll-thumb" id="scrollThumb"></div></div>
+      <span>ROLAR</span>
+    </div>
+  </section>
+
+  <!-- WHY CRISTAL -->
+  <section class="pad" id="academia">
+    <div class="wrap">
+      <div class="why-head reveal">
+        <h2>Não é só uma academia. É o seu momento.</h2>
+        <p>Estrutura pensada para quem treina sério, todos os dias, sem desculpa.</p>
+      </div>
+    </div>
+    <div class="wrap" style="padding:0;">
+      <div class="why-grid">
+        <div class="why-item reveal-item">
+          <div class="why-bg" style="background-image:url('https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=1000&q=80');"></div>
+          <span class="why-num">01</span>
+          <h3>Espaço</h3>
+          <p>Ambiente amplo para você treinar com liberdade.</p>
+          <div class="why-item-line"></div>
+        </div>
+        <div class="why-item reveal-item">
+          <div class="why-bg" style="background-image:url('https://images.unsplash.com/photo-1550345332-09e3ac987658?auto=format&fit=crop&w=1000&q=80');"></div>
+          <span class="why-num">02</span>
+          <h3>Equipamentos</h3>
+          <p>Diversas opções de equipamentos para diferentes objetivos.</p>
+          <div class="why-item-line"></div>
+        </div>
+        <div class="why-item reveal-item">
+          <div class="why-bg" style="background-image:url('https://images.unsplash.com/photo-1571731956672-f2b94d7dd0cb?auto=format&fit=crop&w=1000&q=80');"></div>
+          <span class="why-num">03</span>
+          <h3>Evolução</h3>
+          <p>Um ambiente feito para quem leva seu treino a sério.</p>
+          <div class="why-item-line"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-strip">
+    <div class="wrap" style="padding:0;">
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-num"><span class="counter" data-target="4.5" data-decimals="1">0.0</span></div>
+          <div class="stat-label">Avaliação média</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num"><span class="counter" data-target="30" data-decimals="0">0</span><span class="unit">+</span></div>
+          <div class="stat-label">Avaliações</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num"><span class="counter" data-target="100" data-decimals="0">0</span><span class="unit">%</span></div>
+          <div class="stat-label">Foco no treino</div>
+        </div>
+      </div>
+    </div>
+    <p class="stats-quote">Quem treina, sente a diferença.</p>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="experience" id="estrutura">
+    <div class="exp-bg" id="expBg"></div>
+    <div class="exp-overlay"></div>
+    <div class="wrap exp-content">
+      <h2 class="exp-title">Entre. Treine. Evolua.</h2>
+      <div class="exp-tags">
+        <div class="exp-tag">
+          <span class="eyebrow">Amplitude</span>
+          <p>Espaço para você treinar melhor.</p>
+        </div>
+        <div class="exp-tag">
+          <span class="eyebrow">Equipamentos</span>
+          <p>Estrutura para diferentes tipos de treino.</p>
+        </div>
+        <div class="exp-tag">
+          <span class="eyebrow">Ambiente</span>
+          <p>Um lugar para manter sua rotina.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="pad" id="avaliacoes">
+    <div class="wrap">
+      <div class="testi-head reveal">
+        <h2>Quem treina, sabe.</h2>
+        <div class="testi-rating">
+          <span class="num">4,5 ★</span>
+          <span class="meta">Nota média no Google<br>30 avaliações</span>
+        </div>
+      </div>
+    </div>
+    <div class="wrap" style="padding:0;">
+      <div class="testi-track">
+        <div class="testi-card">
+          <p>"Amplo espaço, muitas opções de equipamentos e treino."</p>
+          <span class="stars">★★★★★</span>
+        </div>
+        <div class="testi-card">
+          <p>"Possui excelente custo-benefício, principalmente no plano anual."</p>
+          <span class="stars">★★★★★</span>
+        </div>
+        <div class="testi-card">
+          <p>"Restante é top demais."</p>
+          <span class="stars">★★★★★</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="pad">
+    <div class="wrap about-grid">
+      <div class="about-img-wrap reveal">
+        <div class="about-img" id="aboutImg"></div>
+      </div>
+      <div class="about-body reveal">
+        <span class="eyebrow">Sobre a academia</span>
+        <h2 style="margin-top:16px;">Feita para quem não para.</h2>
+        <p>A Academia Cristal Garopaba oferece um espaço amplo e uma estrutura completa para quem busca treinar com qualidade, consistência e foco.</p>
+        <div class="about-marks">
+          <div class="about-mark"></div>
+          <div class="about-mark"></div>
+          <div class="about-mark"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOCATION -->
+  <section class="pad loc" id="local">
+    <div class="wrap loc-grid">
+      <div class="reveal">
+        <h2>Vamos treinar?</h2>
+        <div class="loc-line">
+          <div>
+            <strong>Endereço</strong>
+            <span>SC 434, Areias de Palhocinha — Garopaba, SC, 88495-000</span>
+          </div>
+        </div>
+        <div class="loc-line">
+          <div>
+            <strong>Telefone</strong>
+            <span>(48) 99183-7665</span>
+          </div>
+        </div>
+        <a class="btn btn-fill magnetic" style="margin-top:40px;" href="https://wa.me/5548991837665"><span>Falar com a academia</span></a>
+      </div>
+      <div class="loc-map reveal" aria-hidden="true">
+        <svg viewBox="0 0 400 400">
+          <rect width="400" height="400" fill="#0D0D0D"/>
+          <g stroke="rgba(245,245,245,0.08)" stroke-width="1">
+            <path d="M0 80H400M0 160H400M0 240H400M0 320H400"/>
+            <path d="M80 0V400M160 0V400M240 0V400M320 0V400"/>
+          </g>
+          <circle cx="200" cy="200" r="6" fill="#FFD21C"/>
+          <circle cx="200" cy="200" r="34" fill="none" stroke="#FFD21C" stroke-width="1" opacity="0.6"/>
+          <circle cx="200" cy="200" r="64" fill="none" stroke="#FFD21C" stroke-width="1" opacity="0.35"/>
+          <circle cx="200" cy="200" r="94" fill="none" stroke="#FFD21C" stroke-width="1" opacity="0.18"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="final-bg" id="finalBg"></div>
+    <div class="final-overlay"></div>
+    <div class="wrap final-content">
+      <h2 class="final-title">AMANHÃ VOCÊ<br>VAI AGRADECER<br>POR TER <span class="accent">COMEÇADO</span> HOJE.</h2>
+      <a class="btn btn-fill magnetic" href="https://wa.me/5548991837665"><span>Quero treinar</span></a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-logo">CRISTAL<span>ACADEMIA · GAROPABA</span></div>
+      <nav>
+        <ul>
+          <li><a href="#inicio">Início</a></li>
+          <li><a href="#academia">Academia</a></li>
+          <li><a href="#estrutura">Estrutura</a></li>
+          <li><a href="#avaliacoes">Avaliações</a></li>
+          <li><a href="#local">Localização</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>(48) 99183-7665 · Garopaba, SC</span>
+      <span>© 2026 Academia Cristal Garopaba</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- custom cursor ---------- */
+const cursor = document.getElementById('cursor');
+if (!reduceMotion && window.matchMedia('(min-width:901px)').matches) {
+  window.addEventListener('mousemove', e => {
+    gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15, ease: 'power2.out' });
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 3, duration: 0.25 }));
+    el.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, duration: 0.25 }));
+  });
+}
+
+/* ---------- magnetic buttons ---------- */
+if (!reduceMotion) {
+  document.querySelectorAll('.magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      gsap.to(btn, { x: x * 0.3, y: y * 0.4, duration: 0.4, ease: 'power2.out' });
+    });
+    btn.addEventListener('mouseleave', () => gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1,0.4)' }));
+  });
+}
+
+/* ---------- mobile menu ---------- */
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+/* ---------- hero lines (small decorative marks) ---------- */
+const linesSvg = document.getElementById('heroLines');
+const lineDefs = [
+  {x:'8%', y:'18%', w:2, h:60}, {x:'92%', y:'12%', w:2, h:90},
+  {x:'14%', y:'70%', w:36, h:2}, {x:'85%', y:'62%', w:50, h:2}
+];
+lineDefs.forEach(d => {
+  const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  r.setAttribute('x', d.x); r.setAttribute('y', d.y);
+  r.setAttribute('width', d.w); r.setAttribute('height', d.h);
+  r.setAttribute('fill', '#FFD21C'); r.setAttribute('opacity', '0');
+  linesSvg.appendChild(r);
+});
+
+/* ---------- hero load sequence ---------- */
+function heroIntro(){
+  const tl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+  tl.to('#heroBg', { scale:1, duration:1.6, ease:'power2.out' }, 0)
+    .to(linesSvg.querySelectorAll('rect'), { opacity:0.8, duration:0.5, stagger:0.08 }, 0.15)
+    .from('#heroNum', { opacity:0, y:14, duration:0.6 }, 0.35)
+    .from('.hero-title .line span', { yPercent:110, duration:0.9, stagger:0.12 }, 0.55)
+    .from('#heroSub', { opacity:0, y:16, duration:0.7 }, 0.95)
+    .from('#heroCtas .btn', { opacity:0, y:16, duration:0.6, stagger:0.1 }, 1.1);
+}
+if (reduceMotion) {
+  gsap.set('#heroBg', { scale:1 });
+  gsap.set(['.hero-title .line span','#heroNum','#heroSub','#heroCtas .btn'], { opacity:1, y:0, yPercent:0 });
+  gsap.set(linesSvg.querySelectorAll('rect'), { opacity:0.8 });
+} else {
+  heroIntro();
+}
+
+/* ---------- scroll progress thumb ---------- */
+gsap.to('#scrollThumb', {
+  y: () => 44 - 16,
+  ease:'none',
+  scrollTrigger:{ trigger:'body', start:'top top', end:'bottom bottom', scrub:true }
+});
+
+/* ---------- generic reveal ---------- */
+gsap.utils.toArray('.reveal').forEach(el => {
+  if (reduceMotion){ gsap.set(el, {opacity:1, y:0}); return; }
+  gsap.fromTo(el, { opacity:0, y:36 }, {
+    opacity:1, y:0, duration:0.9, ease:'power3.out',
+    scrollTrigger:{ trigger:el, start:'top 82%' }
+  });
+});
+
+/* ---------- why-item stagger reveal ---------- */
+gsap.utils.toArray('.reveal-item').forEach((el,i) => {
+  if (reduceMotion){ gsap.set(el, {opacity:1, y:0}); return; }
+  gsap.fromTo(el, { opacity:0, y:50 }, {
+    opacity:1, y:0, duration:0.8, delay:i*0.08, ease:'power3.out',
+    scrollTrigger:{ trigger:el, start:'top 85%' }
+  });
+});
+
+/* ---------- number counters ---------- */
+gsap.utils.toArray('.counter').forEach(el => {
+  const target = parseFloat(el.dataset.target);
+  const decimals = parseInt(el.dataset.decimals);
+  const obj = { val: 0 };
+  ScrollTrigger.create({
+    trigger: el, start:'top 90%', once:true,
+    onEnter: () => {
+      gsap.to(obj, {
+        val: target, duration: reduceMotion ? 0 : 1.6, ease:'power2.out',
+        onUpdate: () => { el.textContent = obj.val.toFixed(decimals); }
+      });
+    }
+  });
+});
+
+/* ---------- parallax backgrounds ---------- */
+if (!reduceMotion) {
+  gsap.to('#heroBg', { yPercent:12, ease:'none', scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true } });
+  gsap.to('#expBg', { scale:1, yPercent:-6, ease:'none', scrollTrigger:{ trigger:'.experience', start:'top bottom', end:'bottom top', scrub:true } });
+  gsap.to('#aboutImg', { scale:1, ease:'none', scrollTrigger:{ trigger:'.about-img-wrap', start:'top bottom', end:'bottom top', scrub:true } });
+  gsap.to('#finalBg', { opacity:0.4, scale:1, ease:'none', scrollTrigger:{ trigger:'.final-cta', start:'top bottom', end:'top 30%', scrub:true } });
+} else {
+  gsap.set(['#expBg','#aboutImg','#finalBg'], { scale:1 });
+  gsap.set('#finalBg', { opacity:0.4 });
+}
+</script>
+
+</body>
+</html>
